@@ -1,32 +1,26 @@
-name: Auto Fetch Weather Data
+import requests, json, os
+from datetime import datetime
 
-on:
-  schedule:
-    - cron: '*/5 * * * *'
-  workflow_dispatch:
+url = "https://realtime-weather-api-1.onrender.com/data"
+filename = "data/history.json"
 
-jobs:
-  fetch-data:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+r = requests.get(url)
+data = r.json()
+data['fetched_at'] = datetime.now().isoformat()
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.x
+os.makedirs("data", exist_ok=True)
 
-      - name: Install requests
-        run: pip install requests
+# Đọc file cũ nếu có
+if os.path.exists(filename):
+    with open(filename, 'r') as f:
+        try:
+            history = json.load(f)
+        except:
+            history = []
+else:
+    history = []
 
-      - name: Run fetch script
-        run: python fetch_and_log.py
+history.append(data)
 
-      - name: Commit changes
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add data/history.json
-          git commit -m "Auto-update data" || echo "No changes"
-          git push
+with open(filename, 'w') as f:
+    json.dump(history, f, indent=2)
