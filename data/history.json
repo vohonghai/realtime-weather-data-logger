@@ -1,2 +1,13 @@
-[]
-
+[
+  {
+    "counts": 28,
+    "cps": 0.6,
+    "humidity": 41.19,
+    "localTime": "28/05/2025 16:14:42",
+    "stationName": "ReWes-I89",
+    "temperature": 31.7,
+    "timestamp": 1748423682,
+    "uSv": 0.274,
+    "fetched_at": "2025-05-28T09:14:43.183606"
+  }
+]
