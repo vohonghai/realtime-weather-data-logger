@@ -2,57 +2,73 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Realtime Weather Dashboard</title>
+  <title>Realtime Weather Logger</title>
   <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-    }
-    #latest {
-      background: #f0f8ff;
-      border: 1px solid #ccc;
-      padding: 10px;
-      margin-bottom: 20px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    table, th, td {
-      border: 1px solid #aaa;
-    }
-    th, td {
-      padding: 8px;
-      text-align: left;
-    }
+    body { font-family: Arial; padding: 20px; }
+    #latest { background: #eef; padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #aaa; padding: 8px; text-align: left; }
+    button { margin-top: 10px; padding: 8px 12px; font-size: 14px; }
   </style>
 </head>
 <body>
-  <h1>Realtime Weather Data</h1>
-  <div id="latest">Loading...</div>
+  <h1>Realtime Weather Logger</h1>
+
+  <div id="latest">Đang tải dữ liệu...</div>
+
+  <button onclick="downloadHistory()">📥 Tải toàn bộ dữ liệu (JSON)</button>
+
+  <h2>Lịch sử ghi nhận</h2>
+  <table id="historyTable">
+    <thead>
+      <tr>
+        <th>Time</th><th>Temperature</th><th>Humidity</th><th>uSv</th><th>Station</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
   <script>
-    function fetchData() {
-      fetch("https://realtime-weather-api-1.onrender.com/data")
-        .then((response) => response.json())
-        .then((data) => {
-          document.getElementById("latest").innerHTML = `
-            <strong>Station:</strong> ${data.stationName} <br>
-            <strong>Temperature:</strong> ${data.temperature} °C <br>
-            <strong>Humidity:</strong> ${data.humidity} % <br>
-            <strong>uSv:</strong> ${data.uSv} <br>
-            <strong>Time:</strong> ${data.localTime}
-          `;
-        })
-        .catch((err) => {
-          document.getElementById("latest").innerHTML = "Failed to fetch data.";
-          console.error(err);
-        });
-    }
+    let historyData = [];
 
-    // Fetch every 5 seconds
-    fetchData(); // Initial
-    setInterval(fetchData, 5000);
+    fetch("data/history.json")
+      .then(res => res.json())
+      .then(data => {
+        historyData = data; // Lưu để tải về
+
+        const latest = data[data.length - 1];
+        document.getElementById("latest").innerHTML = `
+          <strong>Station:</strong> ${latest.stationName}<br>
+          <strong>Temperature:</strong> ${latest.temperature} °C<br>
+          <strong>Humidity:</strong> ${latest.humidity} %<br>
+          <strong>uSv:</strong> ${latest.uSv}<br>
+          <strong>Time:</strong> ${latest.localTime}<br>
+        `;
+
+        const tbody = document.querySelector("#historyTable tbody");
+        tbody.innerHTML = "";
+        data.slice().reverse().forEach(d => {
+          const row = `<tr>
+            <td>${d.localTime}</td>
+            <td>${d.temperature}</td>
+            <td>${d.humidity}</td>
+            <td>${d.uSv}</td>
+            <td>${d.stationName}</td>
+          </tr>`;
+          tbody.innerHTML += row;
+        });
+      });
+
+    function downloadHistory() {
+      const blob = new Blob([JSON.stringify(historyData, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "weather_history.json";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   </script>
 </body>
 </html>
