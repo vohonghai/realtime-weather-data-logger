@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weather Data Viewer</title>
+</head>
+<body>
+  <h1>Real-time Weather Log</h1>
+  <div id="latest"></div>
+  <pre id="history"></pre>
+
+  <script>
+    fetch('data/history.json')
+      .then(res => res.json())
+      .then(data => {
+        const latest = data[data.length - 1];
+        document.getElementById('latest').innerHTML = `
+          <strong>Latest Data:</strong><br>
+          Temp: ${latest.temperature} °C<br>
+          Humidity: ${latest.humidity}%<br>
+          Time: ${latest.localTime}
+        `;
+        document.getElementById('history').textContent = JSON.stringify(data, null, 2);
+      });
+  </script>
+</body>
+</html>
