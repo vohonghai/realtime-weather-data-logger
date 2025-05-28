@@ -1,27 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Weather Data Viewer</title>
+  <meta charset="UTF-8" />
+  <title>Realtime Weather Dashboard</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    #latest {
+      background: #f0f8ff;
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table, th, td {
+      border: 1px solid #aaa;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+  </style>
 </head>
 <body>
-  <h1>Real-time Weather Log</h1>
-  <div id="latest"></div>
-  <pre id="history"></pre>
+  <h1>Realtime Weather Data</h1>
+  <div id="latest">Loading...</div>
 
   <script>
-    fetch('data/history.json')
-      .then(res => res.json())
-      .then(data => {
-        const latest = data[data.length - 1];
-        document.getElementById('latest').innerHTML = `
-          <strong>Latest Data:</strong><br>
-          Temp: ${latest.temperature} °C<br>
-          Humidity: ${latest.humidity}%<br>
-          Time: ${latest.localTime}
-        `;
-        document.getElementById('history').textContent = JSON.stringify(data, null, 2);
-      });
+    function fetchData() {
+      fetch("https://realtime-weather-api-1.onrender.com/data")
+        .then((response) => response.json())
+        .then((data) => {
+          document.getElementById("latest").innerHTML = `
+            <strong>Station:</strong> ${data.stationName} <br>
+            <strong>Temperature:</strong> ${data.temperature} °C <br>
+            <strong>Humidity:</strong> ${data.humidity} % <br>
+            <strong>uSv:</strong> ${data.uSv} <br>
+            <strong>Time:</strong> ${data.localTime}
+          `;
+        })
+        .catch((err) => {
+          document.getElementById("latest").innerHTML = "Failed to fetch data.";
+          console.error(err);
+        });
+    }
+
+    // Fetch every 5 seconds
+    fetchData(); // Initial
+    setInterval(fetchData, 5000);
   </script>
 </body>
 </html>
