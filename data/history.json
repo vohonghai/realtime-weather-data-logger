@@ -19853,5 +19853,16 @@
     "timestamp": 1750535904,
     "uSv": 0.363,
     "fetched_at": "2025-06-21T19:58:26.128811"
+  },
+  {
+    "counts": 24,
+    "cps": 0.51,
+    "humidity": 43.24,
+    "localTime": "22/06/2025 03:24:10",
+    "stationName": "ReWes-I89",
+    "temperature": 34.4,
+    "timestamp": 1750537450,
+    "uSv": 0.235,
+    "fetched_at": "2025-06-21T20:24:12.158557"
   }
 ]
