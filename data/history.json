@@ -243692,5 +243692,16 @@
     "timestamp": 1787398390,
     "uSv": 0.333,
     "fetched_at": "2026-08-22T11:33:11.684479"
+  },
+  {
+    "counts": 31,
+    "cps": 0.66,
+    "humidity": 50.28,
+    "localTime": "22/08/2026 18:51:41",
+    "stationName": "ReWes-I89",
+    "temperature": 33,
+    "timestamp": 1787399501,
+    "uSv": 0.304,
+    "fetched_at": "2026-08-22T11:51:46.111596"
   }
 ]
